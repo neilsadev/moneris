@@ -99,25 +99,34 @@ class _MonerisCheckoutScreenState extends State<MonerisCheckoutScreen> {
     // Load the Moneris Checkout HTML
     final htmlContent = '''
       <!DOCTYPE html>
-      <html>
+      <html style="height: 100%;">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
         <script src="https://gatewayt.moneris.com/chkt/js/chkt_v1.00.js"></script>
         <style>
-          body, html {
+          * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+          }
+          html, body {
             width: 100%;
             height: 100%;
             overflow: hidden;
             position: fixed;
             top: 0;
             left: 0;
+            -webkit-overflow-scrolling: touch;
           }
           #monerisCheckout {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 100vh;
+            height: 100%;
             border: none;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
           }
         </style>
       </head>
@@ -164,7 +173,6 @@ class _MonerisCheckoutScreenState extends State<MonerisCheckoutScreen> {
           // Initialize the checkout
           myCheckout.setMode("qa"); // Change to "prod" for production
           myCheckout.setCheckoutDiv("monerisCheckout");
-          myCheckout.setFullScreen(true); // Enable fullscreen mode
 
           // Initialize the checkout with the required parameters
           const config = {
