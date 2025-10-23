@@ -55,6 +55,13 @@ class _MonerisCheckoutScreenState extends State<MonerisCheckoutScreen> {
     // Enable JavaScript
     controller.setJavaScriptMode(JavaScriptMode.unrestricted);
     
+    // Platform-specific configurations
+    if (controller.platform is AndroidWebViewController) {
+      AndroidWebViewController.enableDebugging(true);
+      final androidController = controller.platform as AndroidWebViewController;
+      androidController.setMediaPlaybackRequiresUserGesture(false);
+    }
+    
     // Handle page loading states
     controller.setNavigationDelegate(NavigationDelegate(
       onPageStarted: (String url) {
@@ -94,7 +101,7 @@ class _MonerisCheckoutScreenState extends State<MonerisCheckoutScreen> {
       <!DOCTYPE html>
       <html>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <script src="https://gatewayt.moneris.com/chkt/js/chkt_v1.00.js"></script>
         <style>
           body, html {
@@ -103,10 +110,14 @@ class _MonerisCheckoutScreenState extends State<MonerisCheckoutScreen> {
             width: 100%;
             height: 100%;
             overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
           }
           #monerisCheckout {
             width: 100%;
             height: 100vh;
+            border: none;
           }
         </style>
       </head>
@@ -153,21 +164,22 @@ class _MonerisCheckoutScreenState extends State<MonerisCheckoutScreen> {
           // Initialize the checkout
           myCheckout.setMode("qa"); // Change to "prod" for production
           myCheckout.setCheckoutDiv("monerisCheckout");
+          myCheckout.setFullScreen(true); // Enable fullscreen mode
 
-              // Initialize the checkout with the required parameters
-              const config = {
-                checkout_id: '${widget.checkoutId}',
-                environment: 'qa', // Change to 'prod' for production
-                action: 'preload',
-                order_no: 'ORDER_' + Date.now(),
-                cust_id: 'CUST_' + Math.floor(Math.random() * 10000),
-                amount: '${widget.amount}',
-                crypt_type: '7',
-                store_id: 'store1' // Replace with your store ID
-              };
+          // Initialize the checkout with the required parameters
+          const config = {
+            checkout_id: '${widget.checkoutId}',
+            environment: 'qa', // Change to 'prod' for production
+            action: 'preload',
+            order_no: 'ORDER_' + Date.now(),
+            cust_id: 'CUST_' + Math.floor(Math.random() * 10000),
+            amount: '${widget.amount}',
+            crypt_type: '7',
+            store_id: 'store1' // Replace with your store ID
+          };
 
-              // Start the Moneris Checkout flow
-              myCheckout.startCheckout(JSON.stringify(config));
+          // Start the Moneris Checkout flow
+          myCheckout.startCheckout(JSON.stringify(config));
         </script>
       </body>
       </html>
